@@ -27,7 +27,7 @@ EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD  
 
 ### 结果
 
-测试模型是 Qwen3.8-27B，权重为 BF16，硬件是单张 GPU。基准是 SPEED-Bench，也就是 EAGLE-4 论文里的那套测试(https://github.com/eagle-hq/EAGLE-4/blob/main)：开启思考模式，使用贪心解码。表中数字的单位是 token/s。
+测试模型是 Qwen3.8-27B，权重为 BF16，硬件是单张 GPU。基准是 SPEED-Bench，也就是 EAGLE-4 论文里的那套测试https://github.com/eagle-hq/EAGLE-4/blob/main：开启思考模式，使用贪心解码。表中数字的单位是 token/s。
 
 | 并发对话数 | 1 | 4 | 16 | 32 |
 |---|---:|---:|---:|---:|
@@ -57,12 +57,12 @@ EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD  
 
 ## 目标
 
-希望把 EAGLE-4 用到更多模型上，并把它和单请求 megakernel 合在一起，把延迟再降下来(https://rocm.blogs.amd.com/software-tools-optimization/megakernel-intro/README.html?_gl=1*p6clqv*_gcl_au*NjI2Nzc3NjkwLjE3ODYwOTA2OTkuLS4tLjE3ODkxMTM1NjcuMTQ1MzYzMzYwOC4xNzkyNzM2MDI5LjE3OTI3MzYxNTQ.*_ga*MzcxMDczMTU3LjE3NzgzMDkxMzU.*_ga_5KTY6V8M8J*czE3OTI3NDExNDckbzIwMiRnMCR0MTc5Mjc0MTE0NyRqNjAkbDAkaDA.)。
+希望把 EAGLE-4 用到更多模型上，并把它和单请求 megakernel 合在一起，把延迟再降下来https://rocm.blogs.amd.com/software-tools-optimization/megakernel-intro/README.html?_gl=1*p6clqv*_gcl_au*NjI2Nzc3NjkwLjE3ODYwOTA2OTkuLS4tLjE3ODkxMTM1NjcuMTQ1MzYzMzYwOC4xNzkyNzM2MDI5LjE3OTI3MzYxNTQ.*_ga*MzcxMDczMTU3LjE3NzgzMDkxMzU.*_ga_5KTY6V8M8J*czE3OTI3NDExNDckbzIwMiRnMCR0MTc5Mjc0MTE0NyRqNjAkbDAkaDA.
 
 ### 测试配置
 
 - **硬件：** AMD GPU。张量并行度为 1。软件版本是 AMD ROCm™ 7.2.4。
-- **模型：** `Qwen/Qwen3.8-27B`，BF16。草稿权重是 Qwen3.8-27B 对应的 EAGLE-4 权重(https://huggingface.co/EAGLE-Corp/Qwen3.8-27B-EAGLE4)。
+- **模型：** `Qwen/Qwen3.8-27B`，BF16。草稿权重是 Qwen3.8-27B 对应的 EAGLE-4 权重https://huggingface.co/EAGLE-Corp/Qwen3.8-27B-EAGLE4
 - **基准：** SPEED-Bench 的 qualitative 子集。每个类别每隔 10 段对话取一段，一共 88 段，按轮次回放。开启思考，temperature 为 0。token/s 等于生成的 token 数除以墙钟时间(指一条回答的生成 token 数除以它跑完的秒数。)。
 - **引擎：** SGLang 用的是 EAGLE-4 fork 的 main，提交 `2af5570`，并把 ROCm 的 PR rebase 到这个提交上。ATOM 用的是 `proaditya/ATOM` 的 `eagle4_day0_support` 分支，基线是 ATOM main 的 `2479251d3`，镜像是 `rocm/atom-dev:nightly_202610131505`（ROCm 7.2.4，包含 aiter 和 FlyDSL）。表里的每一档并发，SGLang 都使用 EAGLE-Harness 选出来的树。ATOM 在 16 路及以下按 batch 大小使用固定的树，到 32 路改为链。
 eagle4_day0_support:https://github.com/proaditya/ATOM/tree/eagle4_day0_support
@@ -85,7 +85,7 @@ recipe:https://github.com/proaditya/ATOM/blob/eagle4_day0_support/recipes/Qwen3.
 script:https://github.com/proaditya/ATOM/blob/eagle4_day0_support/blog_benchmark/eagle4/build_and_repro.sh
 
 **SGLang。** 用的是 EAGLE-4 仓库里的 SGLang，跑在面向 GPU 的 ROCm SGLang 镜像上。使用前需要准备这些变量：`$EAGLE4` 是 EAGLE-4 仓库路径，`$MODEL` 是主模型路径，`$DRAFT` 是草稿权重路径，`$COST_ROOT` 是开销表输出目录，`$C` 是并发对话数。
-SGLang（用的是 EAGLE-4 仓库里的 SGLang-https://github.com/eagle-hq/sglang，跑在ROCm SGLang 镜像上）：
+SGLang（用的是 EAGLE-4 仓库里的 SGLang- https://github.com/eagle-hq/sglang   ，跑在ROCm SGLang 镜像上）：
 
 ```bash
 export PYTHONPATH=$EAGLE4/sglang-v0.5.20/python
