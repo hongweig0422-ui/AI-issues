@@ -4,7 +4,7 @@
 - 日期：2026 年 10 月 20 日
 - 说明：这是中文译文。命令、版本号和性能数字保持原文，方便对照复现。
 
-EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD Instinct™ MI355X 上运行，SGLang 和 ATOM 都已支持。以 Qwen3.8-27B、BF16 为例，单张 MI355X 处理一条请求时，吞吐大约是 300 token/s，约为普通解码的 3.5 倍，也是该模型自带 MTP（多 token 预测）的 1.6 倍。并发从 1 路增加到 32 路，这个提升仍然保持；扩到四张 GPU，也同样成立。用法和其他硬件一样：同一份权重，同一套启动参数。
+EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD Instinct™ GPU 上运行，SGLang 和 ATOM 都已支持。以 Qwen3.8-27B、BF16 为例，单张 GPU 处理一条请求时，吞吐大约是 300 token/s，约为普通解码的 3.5 倍，也是该模型自带 MTP（多 token 预测）的 1.6 倍。并发从 1 路增加到 32 路，这个提升仍然保持；扩到四张 GPU，也同样成立。用法和其他硬件一样：同一份权重，同一套启动参数。
 
 图 1：单请求下的 EAGLE-4
 
@@ -20,17 +20,17 @@ EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD I
 
 ## 在 AMD Instinct GPU 上的首日支持
 
-在 MI355X 上，EAGLE-4 使用的权重和启动参数与其他平台相同。
+在 GPU 上，EAGLE-4 使用的权重和启动参数与其他平台相同。
 
 为了让它在发布当天就跑得够快，我们做了三件事：
 
-1. 在 MI355X 上测量 EAGLE-Harness 的开销表，让树的大小符合这张卡的实际开销。
+1. 在 GPU 上测量 EAGLE-Harness 的开销表，让树的大小符合这张卡的实际开销。
 2. 给 Qwen3.8 的线性注意力层（Gated DeltaNet）加上树形验证。整棵猜测树一次前向就能查完，只保留被接受那条分支的状态。
 3. 核对结果是否无损。每个输出 token 都与普通解码一致；只有两个候选的得分几乎打平时，才可能因为 BF16 舍入而不同。
 
 ### 结果
 
-测试模型是 Qwen3.8-27B，权重为 BF16，硬件是单张 MI355X。基准是 SPEED-Bench，也就是 EAGLE-4 论文里的那套测试：开启思考模式，使用贪心解码。表中数字的单位是 token/s。
+测试模型是 Qwen3.8-27B，权重为 BF16，硬件是单张 GPU。基准是 SPEED-Bench，也就是 EAGLE-4 论文里的那套测试：开启思考模式，使用贪心解码。表中数字的单位是 token/s。
 
 | 并发对话数 | 1 | 4 | 16 | 32 |
 |---|---:|---:|---:|---:|
@@ -43,11 +43,11 @@ EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD I
 
 - 单请求时，EAGLE-4 每验证一次大约能接受 4.7 个 token，自带 MTP 大约是 2.9 个。前面的 1.6 倍就来自这里。
 - 负载升高、GPU 逐渐占满之后，EAGLE-4 会把猜测缩短，所以到 32 路并发时仍然快于 MTP。
-- 使用张量并行时，单请求在两张 MI355X 上（ATOM）达到 403 token/s，在四张上达到 463–489 token/s（SGLang / ATOM）。
+- 使用张量并行时，单请求在两张 GPU 上（ATOM）达到 403 token/s，在四张上达到 463–489 token/s（SGLang / ATOM）。
 
 ### 四张 GPU
 
-四张 MI355X 做张量并行，基准与上面相同。单位仍是 token/s。
+四张 GPU 做张量并行，基准与上面相同。单位仍是 token/s。
 
 原文四卡表在页面排版后，并发数这一行少了开头的 1。正文写的是四卡单请求 463–489 token/s，并且 SGLang 相对普通解码约 3.0 倍、相对 MTP 约 1.5 倍，与第一列数字相符，所以下表把第一列标为 1 路并发。
 
@@ -68,7 +68,7 @@ EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD I
 
 ### 测试配置
 
-- **硬件：** AMD Instinct MI355X（gfx950）。除非另有说明，张量并行度为 1。软件版本是 AMD ROCm™ 7.2.4。
+- **硬件：** AMD Instinct GPU（gfx950）。除非另有说明，张量并行度为 1。软件版本是 AMD ROCm™ 7.2.4。
 - **模型：** `Qwen/Qwen3.8-27B`，BF16。草稿权重是 Qwen3.8-27B 对应的 EAGLE-4 权重。
 - **基准：** SPEED-Bench 的 qualitative 子集。每个类别每隔 10 段对话取一段，一共 88 段，按轮次回放。开启思考，temperature 为 0。token/s 等于生成的 token 数除以墙钟时间。
 - **引擎：** SGLang 用的是 EAGLE-4 fork 的 main，提交 `2af5570`，并把 ROCm 的 PR rebase 到这个提交上。ATOM 用的是 `proaditya/ATOM` 的 `eagle4_day0_support` 分支，基线是 ATOM main 的 `2479251d3`，镜像是 `rocm/atom-dev:nightly_202610131505`（ROCm 7.2.4，包含 aiter 和 FlyDSL）。表里的每一档并发，SGLang 都使用 EAGLE-Harness 选出来的树。ATOM 在 16 路及以下按 batch 大小使用固定的树，到 32 路改为链。
@@ -87,7 +87,7 @@ EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD I
 EAGLE4= DRAFT= bash blog_benchmark/eagle4/build_and_repro.sh
 ```
 
-**SGLang。** 用的是 EAGLE-4 仓库里的 SGLang，跑在面向 MI355X 的 ROCm SGLang 镜像上。使用前需要准备这些变量：`$EAGLE4` 是 EAGLE-4 仓库路径，`$MODEL` 是主模型路径，`$DRAFT` 是草稿权重路径，`$COST_ROOT` 是开销表输出目录，`$C` 是并发对话数。
+**SGLang。** 用的是 EAGLE-4 仓库里的 SGLang，跑在面向 GPU 的 ROCm SGLang 镜像上。使用前需要准备这些变量：`$EAGLE4` 是 EAGLE-4 仓库路径，`$MODEL` 是主模型路径，`$DRAFT` 是草稿权重路径，`$COST_ROOT` 是开销表输出目录，`$C` 是并发对话数。
 
 ```bash
 export PYTHONPATH=$EAGLE4/sglang-v0.5.20/python
@@ -95,7 +95,7 @@ export FLYDSL_RUNTIME_CACHE_DIR=/tmp/flydsl_cache     # writable; aiter compiles
 # 1. Once per GPU and TP size: measure EAGLE-Harness's cost tables (about 10-20 minutes)
 cd $EAGLE4/inference/scripts
 python engine_cost.py --base-model-path $MODEL --fast-model-path $DRAFT \
-    --draft-tree-path $COST_ROOT --environment-str qwen38-eagle4-mi355x-tp1 \
+    --draft-tree-path $COST_ROOT --environment-str qwen38-eagle4-GPU-tp1 \
     --speculative-model EAGLE4 --compute-intensity high_intensity --model-data-type bfloat16 \
     --attention-backend triton --mm-attention-backend triton_attn --page-size 1 --mamba-ssm-dtype bfloat16 \
     --speculative-draft-attention-backend fa3 --speculative-draft-model-quantization unquant \
@@ -112,7 +112,7 @@ python -m sglang.launch_server --model-path $MODEL --tp-size 1 --dtype bfloat16 
     --speculative-algorithm EAGLE4 --speculative-draft-model-path $DRAFT --speculative-draft-model-quantization unquant \
     --speculative-draft-attention-backend fa3 --speculative-attention-mode prefill --speculative-exec-mode 0 \
     --speculative-num-steps 12 --speculative-eagle-topk 4 --speculative-num-draft-tokens 16 \
-    --speculative-compute-intensity high_intensity --speculative-data-path $COST_ROOT/qwen38-eagle4-mi355x-tp1 --port 30000
+    --speculative-compute-intensity high_intensity --speculative-data-path $COST_ROOT/qwen38-eagle4-GPU-tp1 --port 30000
 ```
 
 三个 `SGLANG_GDN_TREE_*` 开关用来打开线性注意力层的 FlyDSL 树形验证，测开销表时也要同样打开。TP 大于 1 时，两条命令都改成 `--tp-size N`，并且每个 TP 大小各测一张开销表。普通解码就是同一条启动命令，去掉全部 `--speculative-*` 参数。自带 MTP 则改为：
