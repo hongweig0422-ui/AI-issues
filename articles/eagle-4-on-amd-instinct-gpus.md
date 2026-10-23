@@ -27,7 +27,8 @@ EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD  
 
 ### 结果
 
-测试模型是 Qwen3.8-27B，权重为 BF16，硬件是单张 GPU。基准是 SPEED-Bench，也就是 EAGLE-4 论文里的那套测试https://github.com/eagle-hq/EAGLE-4/blob/main：开启思考模式，使用贪心解码。表中数字的单位是 token/s。
+测试模型是 Qwen3.8-27B，权重为 BF16，硬件是单张 GPU。基准是 SPEED-Bench，也就是 EAGLE-4 论文里的那套测试https://github.com/eagle-hq/EAGLE-4/blob/main
+表中数字的单位是 token/s。
 
 | 并发对话数 | 1 | 4 | 16 | 32 |
 |---|---:|---:|---:|---:|
