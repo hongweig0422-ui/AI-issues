@@ -3,7 +3,7 @@
 - 日期：2026 年 10 月 20 日
 EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD   GPU 上运行，SGLang 和 ATOM 都已支持。以 Qwen3.8-27B、BF16 为例，单张 GPU 处理一条请求时，吞吐大约是 300 token/s，约为普通解码的 3.5 倍，也是该模型自带 MTP（多 token 预测）的 1.6 倍。并发从 1 路增加到 32 路，这个提升仍然保持；扩到四张 GPU，也同样成立。用法和其他硬件一样：同一份权重，同一套启动参数。
 <img width="1200" height="600" alt="image" src="https://github.com/user-attachments/assets/4cc7066d-59b2-4107-a506-615dd66ccf19" />
-图 1：
+                                                    图 1：
 
 ## EAGLE-4 新在哪里
 
@@ -37,7 +37,7 @@ EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD  
 | EAGLE-4，SGLang | 289 | 941 | 2,167 | 2,784 |
 | EAGLE-4，ATOM | 309 | 976 | 2,309 | 3,243 |
 <img width="1200" height="600" alt="image" src="https://github.com/user-attachments/assets/23f7e62d-9e73-4f61-8098-08d2a09b5c98" />
-图 2：EAGLE-4 随负载的变化
+                                                    图 2：EAGLE-4 随负载的变化
 
 - 单请求时，EAGLE-4 每验证一次平均大约能接受 4.7 个 token，自带 MTP 平均大约是 2.9 个。前面的 1.6 倍就来自这里。
 - 负载升高、GPU 逐渐占满之后，EAGLE-4 会把猜测缩短，所以到 32 路并发时仍然快于 MTP。
@@ -46,7 +46,7 @@ EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD  
 ### 四张 GPU
 四张 GPU 做张量并行，基准与上面相同。单位仍是 token/s。
 <img width="1200" height="600" alt="image" src="https://github.com/user-attachments/assets/73d40aa3-b69e-4d16-a304-63e2df03e660" />
-图 3：四卡上的 EAGLE-4
+                                                    图 3：四卡上的 EAGLE-4
 
 | 并发对话数 | 1 | 4 | 16 | 32 |
 |---|---:|---:|---:|---:|
