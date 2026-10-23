@@ -1,4 +1,4 @@
-# 背景：EAGLE-4 发布当天能在 AMD   GPU 上跑
+## 背景：EAGLE-4 发布当天能在 AMD   GPU 上跑
 
 - 日期：2026 年 10 月 20 日
 - EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD   GPU 上运行，SGLang 和 ATOM 都已支持。以 Qwen3.8-27B、BF16 为例，单张 GPU 处理一条请求时，吞吐大约是 300 token/s，约为普通解码的 3.5 倍，也是该模型自带 MTP（多 token 预测）的 1.6 倍。并发从 1 路增加到 32 路，这个提升仍然保持；扩到四张 GPU，也同样成立。用法和其他硬件一样：同一份权重，同一套启动参数。
@@ -56,7 +56,7 @@
 | EAGLE-4，ATOM | 489 | 1,347 | 3,381 | 4,796 |
 用 SGLang 时，四张 GPU 上的单条请求，EAGLE-4 是普通解码的 3.0 倍，是 MTP 的 1.5 倍；到 32 路并发，仍分别是 1.9 倍和 1.14 倍。
 
-## 目标
+### 目标
 
 希望把 EAGLE-4 用到更多模型上，并把它和单请求 megakernel 合在一起，把延迟再降下来https://rocm.blogs.amd.com/software-tools-optimization/megakernel-intro/README.html?_gl=1*p6clqv*_gcl_au*NjI2Nzc3NjkwLjE3ODYwOTA2OTkuLS4tLjE3ODkxMTM1NjcuMTQ1MzYzMzYwOC4xNzkyNzM2MDI5LjE3OTI3MzYxNTQ.*_ga*MzcxMDczMTU3LjE3NzgzMDkxMzU.*_ga_5KTY6V8M8J*czE3OTI3NDExNDckbzIwMiRnMCR0MTc5Mjc0MTE0NyRqNjAkbDAkaDA.
 
