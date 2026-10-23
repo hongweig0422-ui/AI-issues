@@ -71,7 +71,7 @@ eagle4_day0_support:https://github.com/proaditya/ATOM/tree/eagle4_day0_support
 
 | | SGLang | ATOM |
 |---|---|---|
-| EAGLE-4，Qwen3.8-27B | 已提供（ROCm PR:https://github.com/eagle-hq/sglang） | 已提供（`eagle4_day0_support`） |
+| EAGLE-4，Qwen3.8-27B | 已提供ROCm PR:https://github.com/eagle-hq/sglang | 已提供（`eagle4_day0_support`） |
 
 两个引擎用的是同一套 SPEED-Bench 客户端和数据，都在 EAGLE-4 仓库里：`inference/scripts/client_speedbench.py`，以及 `inference/dataset/speed_bench/question_multiturn.jsonl`。ATOM 的客户端从响应里的 `usage` 字段读取 token 数。客户端按轮次回放每段对话（开启思考，reasoning effort 为 `xhigh`，temperature 为 0）。文中报告的是 `wall_tput`，也就是生成 token 数除以墙钟时间。`--every 10` 就是表里那 88 段对话；去掉这个参数，则跑全部 880 段。
 
