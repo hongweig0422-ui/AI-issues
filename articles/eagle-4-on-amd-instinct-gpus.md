@@ -27,7 +27,7 @@ EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD  
 
 ### 结果
 
-测试模型是 Qwen3.8-27B，权重为 BF16，硬件是单张 GPU。基准是 SPEED-Bench，也就是 EAGLE-4 论文里的那套测试：开启思考模式，使用贪心解码。表中数字的单位是 token/s。
+测试模型是 Qwen3.8-27B，权重为 BF16，硬件是单张 GPU。基准是 SPEED-Bench，也就是 EAGLE-4 论文里的那套测试(https://github.com/eagle-hq/EAGLE-4/blob/main)：开启思考模式，使用贪心解码。表中数字的单位是 token/s。
 
 | 并发对话数 | 1 | 4 | 16 | 32 |
 |---|---:|---:|---:|---:|
@@ -62,7 +62,7 @@ EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD  
 ### 测试配置
 
 - **硬件：** AMD GPU。张量并行度为 1。软件版本是 AMD ROCm™ 7.2.4。
-- **模型：** `Qwen/Qwen3.8-27B`，BF16。草稿权重是 Qwen3.8-27B 对应的 EAGLE-4 权重。
+- **模型：** `Qwen/Qwen3.8-27B`，BF16。草稿权重是 Qwen3.8-27B 对应的 EAGLE-4 权重(https://huggingface.co/EAGLE-Corp/Qwen3.8-27B-EAGLE4)。
 - **基准：** SPEED-Bench 的 qualitative 子集。每个类别每隔 10 段对话取一段，一共 88 段，按轮次回放。开启思考，temperature 为 0。token/s 等于生成的 token 数除以墙钟时间(指一条回答的生成 token 数除以它跑完的秒数。)。
 - **引擎：** SGLang 用的是 EAGLE-4 fork 的 main，提交 `2af5570`，并把 ROCm 的 PR rebase 到这个提交上。ATOM 用的是 `proaditya/ATOM` 的 `eagle4_day0_support` 分支，基线是 ATOM main 的 `2479251d3`，镜像是 `rocm/atom-dev:nightly_202610131505`（ROCm 7.2.4，包含 aiter 和 FlyDSL）。表里的每一档并发，SGLang 都使用 EAGLE-Harness 选出来的树。ATOM 在 16 路及以下按 batch 大小使用固定的树，到 32 路改为链。
 eagle4_day0_support:https://github.com/proaditya/ATOM/tree/eagle4_day0_support
