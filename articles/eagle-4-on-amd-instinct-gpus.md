@@ -1,12 +1,12 @@
-# 发布当天，EAGLE-4 就能在 AMD Instinct GPU 上跑
+# 发布当天，EAGLE-4 就能在 AMD   GPU 上跑
 
-- 原文：[EAGLE-4 on AMD Instinct GPUs from day 0](https://www.amd.com/en/developer/resources/technical-articles/2026/eagle-4-on-amd-instinct-gpus.html)
+- 原文：[EAGLE-4 on AMD   GPUs from day 0](https://www.amd.com/en/developer/resources/technical-articles/2026/eagle-4-on-amd- -gpus.html)
 - 日期：2026 年 10 月 20 日
 - 说明：这是中文译文。命令、版本号和性能数字保持原文，方便对照复现。
 
-EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD Instinct™ GPU 上运行，SGLang 和 ATOM 都已支持。以 Qwen3.8-27B、BF16 为例，单张 GPU 处理一条请求时，吞吐大约是 300 token/s，约为普通解码的 3.5 倍，也是该模型自带 MTP（多 token 预测）的 1.6 倍。并发从 1 路增加到 32 路，这个提升仍然保持；扩到四张 GPU，也同样成立。用法和其他硬件一样：同一份权重，同一套启动参数。
+EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD   GPU 上运行，SGLang 和 ATOM 都已支持。以 Qwen3.8-27B、BF16 为例，单张 GPU 处理一条请求时，吞吐大约是 300 token/s，约为普通解码的 3.5 倍，也是该模型自带 MTP（多 token 预测）的 1.6 倍。并发从 1 路增加到 32 路，这个提升仍然保持；扩到四张 GPU，也同样成立。用法和其他硬件一样：同一份权重，同一套启动参数。
 
-图 1：单请求下的 EAGLE-4
+图 1：
 
 ## EAGLE-4 新在哪里
 
@@ -18,7 +18,7 @@ EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD I
 
 **草稿模型很小。** 它只有一层 Transformer，放在主模型旁边只占很少显存，数据中心 GPU 和端侧设备都能放下。
 
-## 在 AMD Instinct GPU 上的首日支持
+## 在 AMD   GPU 上的首日支持
 
 在 GPU 上，EAGLE-4 使用的权重和启动参数与其他平台相同。
 
@@ -68,7 +68,7 @@ EAGLE 团队最新的草稿模型 EAGLE-4，从发布当天起就可以在 AMD I
 
 ### 测试配置
 
-- **硬件：** AMD Instinct GPU（gfx950）。除非另有说明，张量并行度为 1。软件版本是 AMD ROCm™ 7.2.4。
+- **硬件：** AMD   GPU（gfx950）。除非另有说明，张量并行度为 1。软件版本是 AMD ROCm™ 7.2.4。
 - **模型：** `Qwen/Qwen3.8-27B`，BF16。草稿权重是 Qwen3.8-27B 对应的 EAGLE-4 权重。
 - **基准：** SPEED-Bench 的 qualitative 子集。每个类别每隔 10 段对话取一段，一共 88 段，按轮次回放。开启思考，temperature 为 0。token/s 等于生成的 token 数除以墙钟时间。
 - **引擎：** SGLang 用的是 EAGLE-4 fork 的 main，提交 `2af5570`，并把 ROCm 的 PR rebase 到这个提交上。ATOM 用的是 `proaditya/ATOM` 的 `eagle4_day0_support` 分支，基线是 ATOM main 的 `2479251d3`，镜像是 `rocm/atom-dev:nightly_202610131505`（ROCm 7.2.4，包含 aiter 和 FlyDSL）。表里的每一档并发，SGLang 都使用 EAGLE-Harness 选出来的树。ATOM 在 16 路及以下按 batch 大小使用固定的树，到 32 路改为链。
